@@ -1,13 +1,11 @@
 # Learned, Uncertainty-driven Adaptive Acquisition
 The official PyTorch implementation of the [Learned, Uncertainty-driven Adaptive Acquisition for Photon-Efficient Multiphoton Microscopy paper](https://arxiv.org/abs/2310.16102)
 
-//LOL CASSANDRA PLZ CHANGE THE IMAGE
-
 <div align="center">
-  <img src="./readme_graphics/uncertainty_gif.gif" width="50%" />
+  <img src="./readme_graphics/teaser.gif" width="80%" />
   <br/>
-  <div align="left" width="50%">
-    <figcaption display="table-caption" width="70%"><b> Results of single-image, three-image, and five-image denoising, showing the image prediction and predicted uncertainty. As the number of measurements increases, the predicted image more closely matches the ground truth, and the pixel-wise uncertainty decreases.</figcaption>
+  <div align="center" width="80%">
+    <figcaption display="table-caption" width="80%"><b> Image prediction and predicted uncertainty when denoising using 1 to 5 noisy multiphoton microscopy images. As the number of measurements increases, the predicted image more closely matches the ground truth, and the pixel-wise uncertainty decreases. </figcaption>
   </div>
 </div>
 
