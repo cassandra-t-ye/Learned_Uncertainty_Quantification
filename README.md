@@ -4,8 +4,8 @@ The official PyTorch implementation of the [Learned, Uncertainty-driven Adaptive
 <div align="center">
   <img src="./readme_graphics/teaser.gif" width="80%" />
   <br/>
-  <div align="center" width="80%">
-    <figcaption display="table-caption" width="80%"><b> Image prediction and predicted uncertainty when denoising using 1 to 5 noisy multiphoton microscopy images. As the number of measurements increases, the predicted image more closely matches the ground truth, and the pixel-wise uncertainty decreases. </figcaption>
+  <div align="left" width="60%">
+    <figcaption display="table-caption" width="60%"><b> Image prediction and predicted uncertainty when denoising using 1 to 5 noisy multiphoton microscopy images. As the number of measurements increases, the predicted image more closely matches the ground truth, and the pixel-wise uncertainty decreases. </figcaption>
   </div>
 </div>
 
