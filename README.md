@@ -27,15 +27,13 @@ source activate learned_uncertainty
 
 # Getting Started:
 
-To get started, download the weights for our finetuned model and the test images here:
+To get started, download the weights for our finetuned model here:
+
+[weights](https://drive.google.com/file/d/1tTP6eeCMWohNpm9i2Mq49IbK-M6VXpE8/view?usp=sharing)
+
+Put the finetuned model weights under the **Experiments** folder
 ```
-*insert google drive link
-*insert google drive link
-```
-Put the finetuned model weights under the **Weights** folder and the test images under the **Visualization** folder
-```
-./Learned_Uncertainty_Quantification/Weights
-./Learned_Uncertainty_Quantification/Visualization
+./Learned_Uncertainty_Quantification/Experiments
 ```
 Once finished, open **quickstart.ipynb** and get started!
 
