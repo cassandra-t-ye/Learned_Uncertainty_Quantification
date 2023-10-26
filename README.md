@@ -1,7 +1,7 @@
 # Learned, Uncertainty-driven Adaptive Acquisition
-The official PyTorch implementation of the Learned, Uncertainty-driven Adaptive Acquisition for Photon-Efficient Multiphoton Microscopy paper. You can find our paper [here](https://arxiv.org/abs/2310.16102)
+The official PyTorch implementation of the [Learned, Uncertainty-driven Adaptive Acquisition for Photon-Efficient Multiphoton Microscopy paper](https://arxiv.org/abs/2310.16102)
 
-//LOL CASSANDRA PLZ FIX THE RESOLUTION OF THIS IMAGE
+//LOL CASSANDRA PLZ CHANGE THE IMAGE
 
 <div align="center">
   <img src="./readme_graphics/uncertainty_gif.gif" width="50%" />
