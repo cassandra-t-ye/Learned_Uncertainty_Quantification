@@ -23,7 +23,6 @@ from basicsr.models.archs.uncertainty_layer import PinballLoss
 loss_module = importlib.import_module('basicsr.models.losses')
 metric_module = importlib.import_module('basicsr.metrics')
 
-# +
 class ImageRestorationModel(BaseModel):
     """Base Deblur model for single image deblur."""
 
@@ -31,7 +30,6 @@ class ImageRestorationModel(BaseModel):
         super(ImageRestorationModel, self).__init__(opt)
 
         # define network
-        print('\n opt[network_g] = ', opt['network_g'] )
         self.net_g = define_network(deepcopy(opt['network_g']))
         self.net_g = self.model_to_device(self.net_g)
 
@@ -78,29 +76,13 @@ class ImageRestorationModel(BaseModel):
         train_opt = self.opt['train']
         optim_params = []
         optim_layers = []
-        
-        #print("\n NET_G is = ", self.net_g)
 
         for k, v in self.net_g.named_parameters():
-            #print('\n k = ', k)
-            #print('does v require grad = ', v.requires_grad)
-            #print('v =', v)
-            if v.requires_grad: #and k.startswith('module.encoders'):
-        #         if k.startswith('module.offsets') or k.startswith('module.dcns'):
-        #             optim_params_lowlr.append(v)
-        #         else:
-                #print('k = ', k )
+            if v.requires_grad: 
                 optim_layers.append(k)
                 optim_params.append(v)
-            # else:
-            #     logger = get_root_logger()
-            #     logger.warning(f'Params {k} will not be optimized.')
-        # print(optim_params)
-        # ratio = 0.1
-        #print('Layers updating: ', optim_layers)
+
         optim_type = train_opt['optim_g'].pop('type')
-        
-        #print("\n optim_params = ", optim_params)
         
         if optim_type == 'Adam':
             self.optimizer_g = torch.optim.Adam([{'params': optim_params}],
@@ -139,7 +121,7 @@ class ImageRestorationModel(BaseModel):
 
 
         crop_size_h, crop_size_w = crop_size_h // self.scale * self.scale, crop_size_w // self.scale * self.scale
-        #adaptive step_i, step_j
+
         num_row = (h - 1) // crop_size_h + 1
         num_col = (w - 1) // crop_size_w + 1
 
@@ -208,57 +190,26 @@ class ImageRestorationModel(BaseModel):
         if self.opt['train'].get('mixup', False):
             self.mixup_aug()
         self.lq = self.lq.float()
-        #print('\nSHAPE OF INPUT = ', self.lq.shape)
         preds = self.net_g(self.lq)
-        #print('PREDS SHAPE = ', preds.shape)
         if not isinstance(preds, list):
             preds = [preds]
 
         self.output = preds[-1]
-        #print('self.output.shape = ', self.output.shape)
+
         l_total = 0
         loss_dict = OrderedDict()
         
         q_lo_loss = PinballLoss(quantile=0.05) #q_lo = 0.05
         q_hi_loss = PinballLoss(quantile=0.95) #q_hi = 0.95
-        mse_loss = nn.MSELoss()  #lpips.LPIPS(net='alex') 
+        mse_loss = nn.MSELoss()   
         l_total = 0
         for pred in preds:    
-            #self.gt = self.gt.unsqueeze(2).repeat((1, 1, 3, 1, 1))
-
-            #print(self.gt.shape)
-            #print(pred.shape)
-#             print(pred[:,:,0,:,:].shape)
-#             print(self.gt[:,:,1,:,:].shape)
             loss = 1 * q_lo_loss(pred[:,0,:,:], self.gt[:,1,:,:]) + \
                      1 * q_hi_loss(pred[:,2,:,:],self.gt[:,1,:,:]) + \
                      1 * mse_loss(pred[:,1,:,:], self.gt[:,1,:,:])
             l_total += loss
         loss_dict['l_pix'] = l_total
 
-        # pixel loss
-#         if self.cri_pix:
-#             l_pix = 0.
-#             for pred in preds:
-#                 l_pix += self.cri_pix(pred, self.gt)
-
-#             # print('l pix ... ', l_pix)
-#             l_total += l_pix
-#             loss_dict['l_pix'] = l_pix
-
-#         # perceptual loss
-#         if self.cri_perceptual:
-#             l_percep, l_style = self.cri_perceptual(self.output, self.gt)
-#         #
-#             if l_percep is not None:
-#                 l_total += l_percep
-#                 loss_dict['l_percep'] = l_percep
-#             if l_style is not None:
-#                 l_total += l_style
-#                 loss_dict['l_style'] = l_style
-        
-
-#         l_total = l_total + 0. * sum(p.sum() for p in self.net_g.parameters())
         l_total.float().backward()
         use_grad_clip = self.opt['train'].get('use_grad_clip', True)
         if use_grad_clip:

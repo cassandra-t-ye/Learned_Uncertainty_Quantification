@@ -26,7 +26,6 @@ class QuantileRegressionLayer(nn.Module):
         self.q_lo = params["q_lo"] 
         self.q_hi = params["q_hi"]
         self.params = params
-        #changed kernel size from 3 to 1
 
         self.lower = nn.Conv2d(n_channels_middle, n_channels_out, kernel_size=3, padding=1)
         self.prediction = nn.Conv2d(n_channels_middle, n_channels_out, kernel_size=3, padding=1)
@@ -34,17 +33,7 @@ class QuantileRegressionLayer(nn.Module):
         
 
     def forward(self, x):
-#         print(self.lower(x).shape)
-#         print(self.prediction(x).shape)
-#         print(self.upper(x).shape)
         output = torch.cat((self.lower(x), self.prediction(x), self.upper(x)), dim=1)
-#         test = torch.cat((self.lower(x).unsqueeze(2), self.prediction(x).unsqueeze(2), self.upper(x).unsqueeze(2)), dim=2)
-#         print('\nTHIS IS WHERE ALL MY PROBLEMS ARE')
-#         print(self.lower(x).unsqueeze(2).shape)
-#         print(self.prediction(x).unsqueeze(2).shape)
-#         print(self.upper(x).unsqueeze(2).shape)      #Expect it to be 8, 5, 1, 256, 256
-#        print('\n OUTPUT SHAPE = ', output.shape)
-#        print('this is a test: ', test.shape)
         return output
 
 
@@ -57,8 +46,6 @@ class NAFBlock(nn.Module):
     def __init__(self, c, DW_Expand=2, FFN_Expand=2, drop_out_rate=0.):
         super().__init__()
         dw_channel = c * DW_Expand
-#         print('C = ', c)
-#         print('dw_channel = ', dw_channel)
         self.conv1 = nn.Conv2d(in_channels=c, out_channels=dw_channel, kernel_size=1, padding=0, stride=1, groups=1, bias=True)
         self.conv2 = nn.Conv2d(in_channels=dw_channel, out_channels=dw_channel, kernel_size=3, padding=1, stride=1, groups=dw_channel,
                                bias=True)
@@ -111,14 +98,10 @@ class NAFBlock(nn.Module):
         return y + x * self.gamma
 
 
-# +
 class NAFNet(nn.Module):
 
     def __init__(self, img_channel=5, width=16, middle_blk_num=1, enc_blk_nums=[], dec_blk_nums=[]):
         super().__init__()
-        
-        print("\nimg_channel = ", img_channel, '\n')
-    
         self.intro = nn.Conv2d(in_channels=img_channel, out_channels=width, kernel_size=3, padding=1, stride=1, groups=1,
                               bias=True)
         #Writing Case for uncertainty
@@ -127,7 +110,6 @@ class NAFNet(nn.Module):
         'q_lo': 0.05, 
         'q_hi': 0.95,  
         }
-        #1 used to be img_channel(which is 3)
         self.ending = QuantileRegressionLayer(width, 1, params) #Change to out channels here
 
         self.encoders = nn.ModuleList()
@@ -172,44 +154,28 @@ class NAFNet(nn.Module):
     def forward(self, inp):
         B, C, H, W = inp.shape
         inp = self.check_image_size(inp)
-        
-#        print('this is the input dtype = ', inp.dtype)
-#print('this is the x dtype = ', x.dtype)
+
         x = self.intro(inp)
-#         print('\nOriginal inp shape = ', inp.shape)
-#         print('\nOriginal x shape = ', x.shape)
-       
+
         encs = []
 
         for encoder, down in zip(self.encoders, self.downs):
             x = encoder(x)
             encs.append(x)
             x = down(x)
-            #print('\nx shape after encoder = ', x.shape)
 
         x = self.middle_blks(x)
-        #print('\nnx shape after self.middle_blks = ', x.shape)
 
         for decoder, up, enc_skip in zip(self.decoders, self.ups, encs[::-1]):
             x = up(x)
             x = x + enc_skip
             x = decoder(x)
-            #print('\nx shape after decoder = ', x.shape)
-            
-        
-        x = self.ending(x)
-#         print('\nx shape after ending = ', x.shape)
-#        print('input shape = ', inp.shape)  
-        inp = torch.mean(inp, 1).unsqueeze(1)    #(8, 5, 512, 512) --> (8, 1, 512, 512)
-#       print('input shape = ', inp.shape)
+
+        x = self.ending(x) 
+        inp = torch.mean(inp, 1).unsqueeze(1)    #(batch, 5, 512, 512) --> (batch, 1, 512, 512)
         inp = inp.repeat((1, 3, 1, 1))
-        
-#         print("X SHAPE IS = ", x.shape)
-#         print('input shape = ', inp.shape)
 
         x = x + inp
-#         print("X SHAPE IS = ", x.shape)
-#         print('this is a test = ', x[:, :, :H, :W].shape)
         return x[:, :, :H, :W]
 
     def check_image_size(self, x):
@@ -219,8 +185,6 @@ class NAFNet(nn.Module):
         x = F.pad(x, (0, mod_pad_w, 0, mod_pad_h))
         return x
 
-
-# -
 
 class NAFNetLocal(Local_Base, NAFNet):
     def __init__(self, *args, train_size=(1, 3, 256, 256), fast_imp=False, **kwargs):
@@ -239,17 +203,12 @@ if __name__ == '__main__':
     img_channel = 5
     width = 32
 
-    # enc_blks = [2, 2, 4, 8]
-    # middle_blk_num = 12
-    # dec_blks = [2, 2, 2, 2]
-
     enc_blks = [1, 1, 1, 28]
     middle_blk_num = 1
     dec_blks = [1, 1, 1, 1]
     
     net = NAFNet(img_channel=img_channel, width=width, middle_blk_num=middle_blk_num,
                       enc_blk_nums=enc_blks, dec_blk_nums=dec_blks)
-
 
     inp_shape = (5, 256, 256)
 
