@@ -24,3 +24,19 @@ Dependencies can be installed using
 conda env create -f environment.yml
 source activate learned_uncertainty
 ```
+
+# Getting Started:
+
+To get started, download the weights for our finetuned model and the test images here:
+```
+*insert google drive link
+*insert google drive link
+```
+Put the finetuned model weights under the **Weights** folder and the test images under the **Visualization** folder
+```
+./Learned_Uncertainty_Quantification/Weights
+./Learned_Uncertainty_Quantification/Visualization
+```
+Once finished, open **quickstart.ipynb** and get started!
+
+
