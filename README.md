@@ -29,7 +29,7 @@ source activate learned_uncertainty
 
 To get started, download the weights for our finetuned model and the test images here:
 ```
-*insert google drive link
+weights: https://drive.google.com/file/d/1tTP6eeCMWohNpm9i2Mq49IbK-M6VXpE8/view?usp=sharing
 *insert google drive link
 ```
 Put the finetuned model weights under the **Weights** folder and the test images under the **Visualization** folder
