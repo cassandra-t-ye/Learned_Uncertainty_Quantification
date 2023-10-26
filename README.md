@@ -29,7 +29,7 @@ To get started, download the weights for our finetuned model here:
 
 [weights](https://drive.google.com/file/d/1tTP6eeCMWohNpm9i2Mq49IbK-M6VXpE8/view?usp=sharing)
 
-Put the finetuned model weights under the **Experiments** folder
+Create an "Experiments" directory and put the finetuned model weights in the folder
 ```
 ./Learned_Uncertainty_Quantification/Experiments
 ```
