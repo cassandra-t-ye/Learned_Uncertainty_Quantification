@@ -1,15 +1,17 @@
 # Learned, Uncertainty-driven Adaptive Acquisition
+
 The official PyTorch implementation of the [Learned, Uncertainty-driven Adaptive Acquisition for Photon-Efficient Multiphoton Microscopy paper](https://arxiv.org/abs/2310.16102)
 
 <div align="center">
   <img src="./readme_graphics/teaser.gif" width="80%" />
   <br/>
   <div align="left" width="60%">
-    <figcaption display="table-caption" width="60%"><b> Image prediction and predicted uncertainty when denoising using 1 to 5 noisy multiphoton microscopy images. As the number of measurements increases, the predicted image more closely matches the ground truth, and the pixel-wise uncertainty decreases. </figcaption>
+    <figcaption display="table-caption" width="60%"> <b>Image prediction and predicted uncertainty when denoising using 1 to 5 noisy multiphoton microscopy images. As the number of measurements increases, the predicted image more closely matches the ground truth, and the pixel-wise uncertainty decreases.</b></figcaption>
   </div>
 </div>
 
 # Setup: 
+
 Clone this project using:
 
 ```
@@ -33,6 +35,6 @@ Create an "Experiments" directory and put the finetuned model weights in the fol
 ```
 ./Learned_Uncertainty_Quantification/Experiments
 ```
-Once finished, open **quickstart.ipynb** and get started!
+Once finished, open quickstart.ipynb and get started!
 
 
